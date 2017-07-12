@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium import webdriver
 import unittest
 
 def is_alert_present(wd):
@@ -11,27 +10,52 @@ def is_alert_present(wd):
 
 class test_group_create(unittest.TestCase):
     def setUp(self):
-        self.wd = WebDriver()
+        self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(60)
     
     def test_test_group_create(self):
-        success = True
         wd = self.wd
-        wd.get("http://localhost/addressbook/")
+        self.open_main_page()
+        self.login()
+        self.open_group_page()
+        self.create_group()
+        # TODO: Verify group page
+
+    def create_group(self):
+        # Creat
+        wd = self.wd
+        wd.find_element_by_name("new").click()
+        wd.find_element_by_name("group_name").click()
+        wd.find_element_by_name("group_name").clear()
+        wd.find_element_by_name("group_name").send_keys("test170710")
+        wd.find_element_by_name("group_header").click()
+        wd.find_element_by_name("group_header").clear()
+        wd.find_element_by_name("group_header").send_keys("TEST170710_1")
+        wd.find_element_by_name("group_footer").click()
+        wd.find_element_by_name("group_footer").clear()
+        wd.find_element_by_name("group_footer").send_keys("comment170710_1")
+        wd.find_element_by_name("group_name").click()
+        wd.find_element_by_name("submit").click()
+
+    def open_group_page(self):
+        # Open group page
+        wd = self.wd
+        wd.find_element_by_link_text("Групи").click()
+
+    def login(self):
+        # Login
+        wd = self.wd
         wd.find_element_by_name("user").click()
-        wd.find_element_by_name("user").send_keys("\\undefined")
-        wd.find_element_by_name("pass").click()
         wd.find_element_by_name("pass").clear()
         wd.find_element_by_name("pass").send_keys("secret")
         wd.find_element_by_name("user").click()
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys("admin")
         wd.find_element_by_xpath("//form[@id='LoginForm']/input[3]").click()
-        wd.back()
-        wd.get()
-        wd.back()
-        self.assertTrue(success)
-    
+
+    def open_main_page(self):
+        self.wd.get("http://localhost/addressbook/")
+
     def tearDown(self):
         self.wd.quit()
 
