@@ -4,6 +4,13 @@ class AddressBook:
     def __init__(self):
         self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(15)
+    def message(self):
+        return self.wd.find_element_by_css_selector(".msgbox").text
+
+    def return_group_page(self):
+        wd = self.wd
+        wd.find_element_by_link_text("group page").click()
+
 
 
     def create_group(self, group):
