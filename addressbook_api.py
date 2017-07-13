@@ -1,17 +1,41 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 class AddressBook:
     def __init__(self):
         self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(15)
+
     def message(self):
         return self.wd.find_element_by_css_selector(".msgbox").text
+
+    def open_main_page(self):
+        self.wd.get("http://localhost/addressbook/")
+
+    def is_element_present(self, by, value):
+        return len(self.wd.find_elements(by, value)) !=0
+
+    def is_logged(self):
+        return self.is_element_present(By.NAME, "logout")
+
+    def login(self, username, password):
+        # Login
+        wd = self.wd
+        wd.find_element_by_name("user").click()
+        wd.find_element_by_name("pass").clear()
+        wd.find_element_by_name("pass").send_keys(password)
+        wd.find_element_by_name("user").click()
+        wd.find_element_by_name("user").clear()
+        wd.find_element_by_name("user").send_keys(username)
+        wd.find_element_by_xpath("//form[@id='LoginForm']/input[3]").click()
+
+    def logout(self):
+        wd = self.wd
+        wd.find_element_by_xpath("//*[@id='top']/form/a").click()
 
     def return_group_page(self):
         wd = self.wd
         wd.find_element_by_link_text("group page").click()
-
-
 
     def create_group(self, group):
         # Creat
@@ -28,24 +52,17 @@ class AddressBook:
         wd.find_element_by_name("group_footer").send_keys(group.footer)
         wd.find_element_by_name("submit").click()
 
+    def delete_first_group(self):
+        wd = self.wd
+        checkboxes = wd.find_elements_by_name("selected[]")
+        if not checkboxes[0].is_selected():
+            checkboxes[0].click()
+        wd.find_element_by_name("delete").click()
+
     def open_group_page(self):
         # Open group page
         wd = self.wd
         wd.find_element_by_link_text("Групи").click()
-
-    def login(self, username, password):
-        # Login
-        wd = self.wd
-        wd.find_element_by_name("user").click()
-        wd.find_element_by_name("pass").clear()
-        wd.find_element_by_name("pass").send_keys(password)
-        wd.find_element_by_name("user").click()
-        wd.find_element_by_name("user").clear()
-        wd.find_element_by_name("user").send_keys(username)
-        wd.find_element_by_xpath("//form[@id='LoginForm']/input[3]").click()
-
-    def open_main_page(self):
-        self.wd.get("http://localhost/addressbook/")
 
     def destroy(self):
         self.wd.quit()
